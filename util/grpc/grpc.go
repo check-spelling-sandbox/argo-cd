@@ -129,6 +129,7 @@ func TestTLS(address string, dialTime time.Duration, isTest bool) (*TLSTestResul
 	var testResult TLSTestResult
 	var tlsConfig tls.Config
 	if isTest {
+		// InsecureSkipVerify should only be used in a controlled testing environment
 		tlsConfig.InsecureSkipVerify = true
 	}
 	creds := credentials.NewTLS(&tlsConfig)
