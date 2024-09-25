@@ -186,7 +186,7 @@ func init() {
 	argoCDAppControllerName = GetEnvWithDefault(EnvArgoCDAppControllerName, common.DefaultApplicationControllerName)
 
 	dialTime := 30 * time.Second
-	tlsTestResult, err := grpcutil.TestTLS(apiServerAddress, dialTime)
+	tlsTestResult, err := grpcutil.TestTLS(apiServerAddress, dialTime, true)
 	CheckError(err)
 
 	ArgoCDClientset, err = apiclient.NewClient(&apiclient.ClientOptions{
