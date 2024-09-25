@@ -121,14 +121,16 @@ type TLSTestResult struct {
 	InsecureErr error
 }
 
-func TestTLS(address string, dialTime time.Duration) (*TLSTestResult, error) {
+func TestTLS(address string, dialTime time.Duration, isTest bool) (*TLSTestResult, error) {
 	if parts := strings.Split(address, ":"); len(parts) == 1 {
 		// If port is unspecified, assume the most likely port
 		address += ":443"
 	}
 	var testResult TLSTestResult
 	var tlsConfig tls.Config
-	tlsConfig.InsecureSkipVerify = true
+	if isTest {
+		tlsConfig.InsecureSkipVerify = true
+	}
 	creds := credentials.NewTLS(&tlsConfig)
 
 	// Set timeout when dialing to the server
