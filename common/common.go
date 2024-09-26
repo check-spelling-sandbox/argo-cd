@@ -425,8 +425,8 @@ var PermissionDeniedAPIError = status.Error(codes.PermissionDenied, "permission 
 
 // Redis password consts
 const (
-	DefaultRedisInitialPasswordSecretName = "argocd-redis"
-	DefaultRedisInitialPasswordKey        = "auth"
+	DefaultRedisInitialCredentials    = "argocd-redis"
+	DefaultRedisInitialCredentialsKey = "auth"
 )
 
 /*
@@ -435,17 +435,17 @@ SetOptionalRedisPasswordFromKubeConfig sets the optional Redis password if it ex
 We specify kubeClient as kubernetes.Interface to allow for mocking in tests, but this should be treated as a kubernetes.Clientset param.
 */
 func SetOptionalRedisPasswordFromKubeConfig(ctx context.Context, kubeClient kubernetes.Interface, namespace string, redisOptions *redis.Options) error {
-	secret, err := kubeClient.CoreV1().Secrets(namespace).Get(ctx, DefaultRedisInitialPasswordSecretName, v1.GetOptions{})
+	secret, err := kubeClient.CoreV1().Secrets(namespace).Get(ctx, DefaultRedisInitialCredentials, v1.GetOptions{})
 	if err != nil {
-		return fmt.Errorf("failed to get secret %s/%s: %w", namespace, DefaultRedisInitialPasswordSecretName, err)
+		return fmt.Errorf("failed to get secret %s/%s: %w", namespace, DefaultRedisInitialCredentials, err)
 	}
 	if secret == nil {
-		return fmt.Errorf("failed to get secret %s/%s: secret is nil", namespace, DefaultRedisInitialPasswordSecretName)
+		return fmt.Errorf("failed to get secret %s/%s: secret is nil", namespace, DefaultRedisInitialCredentials)
 	}
-	_, ok := secret.Data[DefaultRedisInitialPasswordKey]
+	_, ok := secret.Data[DefaultRedisInitialCredentialsKey]
 	if !ok {
-		return fmt.Errorf("secret %s/%s does not contain key %s", namespace, DefaultRedisInitialPasswordSecretName, DefaultRedisInitialPasswordKey)
+		return fmt.Errorf("secret %s/%s does not contain key %s", namespace, DefaultRedisInitialCredentials, DefaultRedisInitialCredentialsKey)
 	}
-	redisOptions.Password = string(secret.Data[DefaultRedisInitialPasswordKey])
+	redisOptions.Password = string(secret.Data[DefaultRedisInitialCredentialsKey])
 	return nil
 }
